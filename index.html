@@ -1,0 +1,739 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Ejemplos 2.2.1 y 2.2.2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: una columna tipo cuaderno cuadriculado sobre pizarra verde.
+   Tres marcos grandes (teoría, 2.2.1, 2.2.2); dentro, las tarjetas son las piezas con sombra dura. */
+:root{
+  color-scheme: dark;
+  --board:#13231c;      /* fondo: pizarra */
+  --grid:#182b23;       /* cuadrícula del cuaderno */
+  --frame:#1a3027;      /* marco de cada bloque */
+  --slate:#234035;      /* cara de las tarjetas */
+  --well:#0f1c16;       /* cajas de fórmulas */
+  --ink:#060c09;        /* bordes y sombras */
+  --chalk:#ece9dc;      /* texto: tiza blanca */
+  --chalk-dim:#a9b6a8;  /* texto secundario */
+  --orange:#f39b5f;     /* tiza naranja: 2.2.1 */
+  --yellow:#f1cf6a;     /* tiza amarilla: 2.2.2 */
+  --blue:#8fc9d6;       /* plumón azul: teoría */
+  --red:#ea6350;        /* acción y advertencias */
+  --font-display:'Bricolage Grotesque','Trebuchet MS',sans-serif;
+  --font-body:'Atkinson Hyperlegible','Segoe UI',system-ui,sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+  --tone:var(--blue);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background-color:var(--board);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:28px 28px;
+  color:var(--chalk);
+  font-family:var(--font-body);
+  font-size:16.5px;
+  line-height:1.6;
+}
+.page{
+  max-width:800px;margin:0 auto;
+  padding-block:36px 80px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:grid;gap:44px;
+}
+p{margin:0}
+h1,h2,h3{font-family:var(--font-display);margin:0;text-wrap:balance;line-height:1.15}
+h1{font-size:clamp(30px,7vw,48px);font-weight:800;letter-spacing:-0.01em}
+h2{font-size:clamp(22px,4.6vw,28px);font-weight:800}
+h3{font-size:20px;font-weight:600}
+b,strong{color:var(--chalk);font-weight:700}
+a{color:var(--blue)}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+
+/* ---------- cabecera ---------- */
+.eyebrow{font-family:var(--font-mono);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--chalk-dim)}
+.top{display:grid;gap:16px}
+.top h1 mark{background:var(--yellow);color:var(--ink);padding:0 .18em;border:2.5px solid var(--ink);border-radius:8px;box-shadow:4px 4px 0 var(--ink);display:inline-block;transform:rotate(-1deg)}
+.lead{max-width:62ch;color:var(--chalk-dim)}
+.lead b{color:var(--chalk)}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.jump,.tool{
+  font-family:var(--font-mono);font-size:13px;font-weight:600;
+  border:2.5px solid var(--ink);border-radius:10px;padding:7px 12px;
+  box-shadow:3px 3px 0 var(--ink);text-decoration:none;cursor:pointer;
+  transition:transform .12s,box-shadow .12s;
+}
+.jump{background:var(--frame);color:var(--chalk)}
+.tool{background:var(--red);color:var(--ink)}
+.jump:hover,.tool:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+.jump:active,.tool:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.bar .sep{flex:1 1 20px}
+
+/* ---------- marcos ---------- */
+.frame{
+  background:var(--frame);border:2.5px solid var(--ink);border-radius:20px;
+  box-shadow:8px 8px 0 var(--ink);padding:24px;display:grid;gap:22px;
+  scroll-margin-top:16px;
+}
+.frame[data-tone="orange"]{--tone:var(--orange)}
+.frame[data-tone="yellow"]{--tone:var(--yellow)}
+.frame[data-tone="blue"]{--tone:var(--blue)}
+.frame-head{display:grid;gap:10px;justify-items:start}
+.tag{
+  font-family:var(--font-mono);font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  background:var(--tone);color:var(--ink);border:2px solid var(--ink);border-radius:8px;padding:3px 9px;white-space:nowrap;
+}
+.sub{color:var(--chalk-dim);max-width:62ch}
+
+/* ---------- fórmulas ---------- */
+.eq{
+  background:var(--well);border:2px solid var(--ink);border-radius:10px;
+  padding:10px 14px;margin-top:8px;overflow-x:auto;max-width:100%;
+}
+.eq mjx-container{margin:0 !important}
+.eq + p{margin-top:8px}
+
+/* ---------- teoría ---------- */
+.rows{border:2.5px solid var(--ink);border-radius:14px;background:var(--slate);overflow:hidden}
+.t-row{display:grid;grid-template-columns:190px minmax(0,1fr);gap:22px;padding:20px 22px;border-top:2.5px solid var(--ink)}
+.t-row:first-child{border-top:0}
+.t-key{display:grid;gap:6px;align-content:start;justify-items:start}
+.t-num{font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--blue)}
+.t-key h3{font-size:18px}
+.used{font-family:var(--font-mono);font-size:11.5px;color:var(--chalk-dim);border:1.5px solid var(--chalk-dim);border-radius:6px;padding:1px 7px}
+.t-body{min-width:0;display:grid;gap:10px}
+.t-body ul{margin:0;padding-left:1.1em;display:grid;gap:6px}
+.t-body .eq{margin-top:0}
+
+/* ---------- enunciado ---------- */
+.given{border:2.5px dashed var(--tone);border-radius:14px;padding:16px 18px;display:grid;gap:8px;min-width:0}
+.label{font-family:var(--font-mono);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--tone)}
+
+/* ---------- tarjetas ---------- */
+.cards{display:grid;gap:24px}
+.card{
+  position:relative;background:var(--slate);border:2.5px solid var(--ink);border-radius:16px;
+  box-shadow:6px 6px 0 var(--ink);transition:transform .12s,box-shadow .12s;min-width:0;
+  scroll-margin-top:16px;
+}
+.card:not(.open):hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 var(--ink)}
+.card:not(.open):active{transform:translate(3px,3px);box-shadow:3px 3px 0 var(--ink)}
+.card.open{background:var(--frame);box-shadow:6px 6px 0 var(--tone)}
+.face{padding:20px 22px;display:grid;gap:14px;min-width:0}
+.front{cursor:pointer;border-radius:14px}
+.card:not(.open) .back,
+.card.open .front{
+  position:absolute;top:0;left:0;width:100%;height:0;padding-block:0;overflow:hidden;visibility:hidden;pointer-events:none;
+}
+.card.open .back{animation:reveal .4s ease both}
+.card:not(.open) .front{animation:reveal .3s ease both}
+@keyframes reveal{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.face-top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.cta{
+  font-family:var(--font-mono);font-size:12.5px;font-weight:600;background:var(--red);color:var(--ink);
+  border:2px solid var(--ink);border-radius:8px;padding:4px 10px;box-shadow:3px 3px 0 var(--ink);white-space:nowrap;
+}
+.btn-back{
+  font-family:var(--font-mono);font-size:12.5px;font-weight:600;background:var(--slate);color:var(--chalk);
+  border:2px solid var(--ink);border-radius:8px;padding:5px 10px;box-shadow:3px 3px 0 var(--ink);cursor:pointer;
+  transition:transform .12s,box-shadow .12s;
+}
+.btn-back:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+.btn-back:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.btn-bottom{justify-self:start}
+.ask{color:var(--chalk-dim)}
+.hint{font-size:14.5px;color:var(--chalk-dim)}
+.hint b{color:var(--tone)}
+
+.steps{list-style:none;margin:0;padding:0;counter-reset:s;display:grid;gap:18px}
+.steps > li{counter-increment:s;display:grid;grid-template-columns:30px minmax(0,1fr);gap:12px;align-items:start}
+.steps > li::before{
+  content:counter(s);font-family:var(--font-mono);font-size:13px;font-weight:600;color:var(--tone);
+  width:30px;height:30px;display:grid;place-items:center;background:var(--well);border:2px solid var(--ink);border-radius:8px;
+}
+.steps > li > div{min-width:0}
+.why{color:var(--chalk-dim);font-size:15px;margin-top:6px}
+
+.result{
+  background:var(--tone);color:var(--ink);border:2.5px solid var(--ink);border-radius:12px;
+  box-shadow:4px 4px 0 var(--ink);padding:12px 16px;display:grid;gap:4px;min-width:0;overflow-x:auto;
+}
+.result .label{color:var(--ink)}
+.result b{color:var(--ink)}
+.result p{font-size:15.5px}
+.result .big{font-size:18px;font-weight:700}
+.note{border:2px dashed var(--red);border-radius:12px;padding:12px 16px;display:grid;gap:4px;font-size:15px;min-width:0}
+.note .label{color:var(--red)}
+.fig{background:var(--well);border:2px solid var(--ink);border-radius:10px;padding:8px;margin-top:8px}
+.fig svg{display:block;width:100%;height:auto;max-width:440px;margin:0 auto}
+.s-t{fill:var(--chalk);font:500 12px var(--font-body)}
+.s-d{fill:var(--chalk-dim);font:400 11.5px var(--font-body)}
+.s-line{stroke:var(--chalk-dim);fill:none}
+.s-fill{fill:var(--tone);fill-opacity:.45}
+.s-off{fill:var(--red);fill-opacity:.4}
+.foot{color:var(--chalk-dim);font-size:14px}
+
+@media (max-width:640px){
+  .frame{padding:16px;box-shadow:6px 6px 0 var(--ink)}
+  .t-row{grid-template-columns:minmax(0,1fr);gap:10px;padding:16px}
+  .face{padding:16px}
+  body{font-size:16px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important}
+  html{scroll-behavior:auto}
+}
+</style>
+
+<div class="page">
+
+  <header class="top">
+    <p class="eyebrow">Inferencia Estadística · UNALM · Cap. 2, intervalos de confianza</p>
+    <h1>Evaluar un intervalo <mark>ya dado</mark></h1>
+    <p class="lead">Ejemplos <b>2.2.1</b> y <b>2.2.2</b>, con los pasos de la pizarra del viernes 6 de noviembre. Lee el planteamiento, inténtalo en tu cuaderno y toca la tarjeta para comparar con la resolución.</p>
+    <nav class="bar" aria-label="Secciones">
+      <a class="jump" href="#teoria">Teoría</a>
+      <a class="jump" href="#ej-221">Ejemplo 2.2.1</a>
+      <a class="jump" href="#ej-222">Ejemplo 2.2.2</a>
+      <span class="sep"></span>
+      <button type="button" class="tool" id="open-all">Abrir todas</button>
+      <button type="button" class="tool" id="close-all">Cerrar todas</button>
+    </nav>
+  </header>
+
+  <!-- ================= TEORÍA ================= -->
+  <section class="frame" id="teoria" data-tone="blue">
+    <div class="frame-head">
+      <span class="tag">Teoría</span>
+      <h2>Lo que necesitas, en el orden en que se usa</h2>
+      <p class="sub">En los dos ejemplos te entregan un intervalo ya construido y te piden medir qué tan bueno es.</p>
+    </div>
+
+    <div class="rows">
+
+      <div class="t-row">
+        <div class="t-key"><span class="t-num">1</span><h3>Las dos medidas</h3><span class="used">todo</span></div>
+        <div class="t-body">
+          <ul>
+            <li><b>Coeficiente de confianza \(\gamma\):</b> probabilidad de que el intervalo atrape al parámetro. Es lo mismo que \(1-\alpha\).</li>
+            <li><b>Longitud \(L\):</b> límite superior menos límite inferior. Si cambia de una muestra a otra, se pide su promedio \(E(L)\).</li>
+          </ul>
+          <div class="eq">\[\gamma = P\left[\,LI \le \theta \le LS\,\right] \qquad L = LS - LI\]</div>
+          <p>Un buen intervalo tiene \(\gamma\) alto y \(L\) pequeña. Agrandarlo sube \(\gamma\), pero baja la precisión.</p>
+        </div>
+      </div>
+
+      <div class="t-row">
+        <div class="t-key"><span class="t-num">2</span><h3>Normal, pivote y tabla Z</h3><span class="used">2.2.1 a)</span></div>
+        <div class="t-body">
+          <ul>
+            <li>Si los datos son \(N(\mu,\sigma^2)\), el promedio cumple \(\bar X \sim N(\mu,\ \sigma^2/n)\).</li>
+            <li><b>Estandarizar:</b> restar la media y dividir entre la desviación estándar lleva cualquier normal a la estándar \(Z\).</li>
+          </ul>
+          <div class="eq">\[Z = \frac{\bar X - \mu}{\sigma/\sqrt n} \sim N(0,1)\]</div>
+          <ul>
+            <li>Ese cociente es el <b>pivote</b>: contiene a \(\mu\), pero su comportamiento no depende de \(\mu\).</li>
+            <li>La tabla Z da \(P(Z \le z)\), el área a la izquierda. Entre dos puntos se resta. Por simetría, \(P(Z \le -z) = 1 - P(Z \le z)\).</li>
+            <li><b>Desigualdades:</b> sumar, restar o multiplicar por un positivo no cambia los signos. Multiplicar por un negativo los voltea.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="t-row">
+        <div class="t-key"><span class="t-num">3</span><h3>Reglas de la esperanza</h3><span class="used">2.2.1 b) · 2.2.2 b)</span></div>
+        <div class="t-body">
+          <p>Esperanza = promedio si repitieras el muestreo muchas veces.</p>
+          <div class="eq">\[E(c) = c \qquad E(cX) = c\,E(X) \qquad E(X - Y) = E(X) - E(Y)\]</div>
+          <p>Para una variable continua con densidad \(g\), el promedio es "cada valor por su peso", sumado con una integral:</p>
+          <div class="eq">\[E(Y) = \int y\,g(y)\,dy\]</div>
+        </div>
+      </div>
+
+      <div class="t-row">
+        <div class="t-key"><span class="t-num">4</span><h3>Uniforme: área = probabilidad</h3><span class="used">2.2.2 a)</span></div>
+        <div class="t-body">
+          <ul>
+            <li>En \(U(a,b)\) todos los valores del tramo son igual de probables. Su gráfico es un rectángulo de altura \(\dfrac{1}{b-a}\).</li>
+            <li>Probabilidad de un tramo = su área = ancho × altura. En el 2.2.2 el ancho total es 1, así que la altura es 1 y <b>la probabilidad es el ancho del tramo</b>.</li>
+            <li>\(F(y) = P(X \le y)\) es el área a la izquierda de \(y\).</li>
+          </ul>
+          <div class="fig">
+            <svg viewBox="0 0 360 100" role="img" aria-label="Rectángulo de la uniforme dividido en y: a la izquierda F(y), a la derecha 1 menos F(y)">
+              <rect class="s-fill" x="40" y="14" width="160" height="44"></rect>
+              <rect class="s-line" x="40" y="14" width="280" height="44" stroke-width="1.5"></rect>
+              <line class="s-line" x1="200" y1="8" x2="200" y2="64" stroke-dasharray="4 3"></line>
+              <text class="s-t" x="120" y="40" text-anchor="middle">F(y)</text>
+              <text class="s-t" x="260" y="40" text-anchor="middle">1 − F(y)</text>
+              <text class="s-d" x="40" y="80" text-anchor="middle">4θ−½</text>
+              <text class="s-t" x="200" y="80" text-anchor="middle">y</text>
+              <text class="s-d" x="320" y="80" text-anchor="middle">4θ+½</text>
+            </svg>
+          </div>
+          <div class="eq">\[F(y) = y - \left(4\theta - \tfrac12\right) = y - 4\theta + \tfrac12 \qquad f(y) = 1\]</div>
+        </div>
+      </div>
+
+      <div class="t-row">
+        <div class="t-key"><span class="t-num">5</span><h3>Reglas de probabilidad</h3><span class="used">2.2.2 a)</span></div>
+        <div class="t-body">
+          <ul>
+            <li><b>Independientes y las dos a la vez:</b> se multiplica.</li>
+            <li><b>A o B:</b> se suma y se resta lo que se contó dos veces.</li>
+            <li><b>Complemento:</b> \(P(\text{no } A) = 1 - P(A)\).</li>
+          </ul>
+          <div class="eq">\[P(A \cup B) = P(A) + P(B) - P(A \cap B)\]</div>
+        </div>
+      </div>
+
+      <div class="t-row">
+        <div class="t-key"><span class="t-num">6</span><h3>Máximo y mínimo de dos datos</h3><span class="used">2.2.2 b)</span></div>
+        <div class="t-body">
+          <ul>
+            <li>El <b>máximo</b> queda a la izquierda de \(y\) solo si <b>los dos</b> datos quedan a la izquierda.</li>
+            <li>El <b>mínimo</b> queda a la derecha de \(y\) solo si <b>los dos</b> datos quedan a la derecha.</li>
+          </ul>
+          <div class="eq">\[F_{Y_2}(y) = [F(y)]^2 \qquad P(Y_1 > y) = [1 - F(y)]^2\]</div>
+          <p>Derivando salen sus densidades. Ya no son rectángulos: el máximo se carga a la derecha y el mínimo a la izquierda.</p>
+          <div class="eq">\[g_2(y) = 2\,F(y)\,f(y) \qquad g_1(y) = 2\,[1 - F(y)]\,f(y)\]</div>
+          <div class="fig">
+            <svg viewBox="0 0 360 132" role="img" aria-label="Densidad del máximo: triángulo que sube de 0 a 2. Densidad del mínimo: triángulo que baja de 2 a 0">
+              <polygon class="s-fill" points="30,96 160,96 160,20"></polygon>
+              <polygon class="s-off" points="200,20 200,96 330,96"></polygon>
+              <line class="s-line" x1="20" y1="96" x2="340" y2="96"></line>
+              <text class="s-d" x="166" y="24">2</text>
+              <text class="s-d" x="188" y="24">2</text>
+              <text class="s-t" x="95" y="114" text-anchor="middle">Máximo Y₂</text>
+              <text class="s-t" x="265" y="114" text-anchor="middle">Mínimo Y₁</text>
+              <text class="s-d" x="95" y="128" text-anchor="middle">sube de 0 a 2</text>
+              <text class="s-d" x="265" y="128" text-anchor="middle">baja de 2 a 0</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="t-row">
+        <div class="t-key"><span class="t-num">7</span><h3>Derivar e integrar, lo mínimo</h3><span class="used">2.2.2 b)</span></div>
+        <div class="t-body">
+          <ul>
+            <li><b>Regla de la cadena:</b> baja el exponente y multiplica por la derivada de lo de adentro. La derivada de \(F\) es \(f\).</li>
+            <li><b>Potencias:</b> al integrar, el exponente sube en 1 y se divide entre el nuevo exponente.</li>
+            <li><b>Integral definida:</b> se evalúa la fórmula arriba, se evalúa abajo y se resta.</li>
+          </ul>
+          <div class="eq">\[\left(u^2\right)' = 2u\,u' \qquad \int y^n\,dy = \frac{y^{n+1}}{n+1}\]</div>
+          <div class="eq">\[a^2 - b^2 = (a-b)(a+b) \qquad a^3 - b^3 = (a-b)\left(a^2 + ab + b^2\right)\]</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= 2.2.1 ================= -->
+  <section class="frame" id="ej-221" data-tone="orange">
+    <div class="frame-head">
+      <span class="tag">Ejemplo 2.2.1</span>
+      <h2>Población normal con varianza conocida</h2>
+    </div>
+
+    <div class="given">
+      <p class="label">Enunciado</p>
+      <p>Sea \(X_1,\dots,X_n\) una muestra aleatoria de una población \(N(\mu,\sigma^2)\), con \(\sigma^2\) conocida. Considere el intervalo aleatorio para \(\mu\):</p>
+      <div class="eq">\[I(\mathbf X) = \left[\ \bar X - 1.4\,\frac{\sigma}{\sqrt n}\ ,\ \ \bar X + 1.4\,\frac{\sigma}{\sqrt n}\ \right]\]</div>
+    </div>
+
+    <div class="cards">
+
+      <article class="card" id="c-221a">
+        <div class="face front" role="button" tabindex="0" aria-expanded="false" aria-controls="c-221a-back">
+          <div class="face-top"><span class="tag">2.2.1 · a)</span><span class="cta" aria-hidden="true">Ver resolución</span></div>
+          <h3>Halle el coeficiente de confianza \(\gamma\)</h3>
+          <p class="ask">¿Con qué probabilidad este intervalo atrapa a \(\mu\)?</p>
+          <p class="hint"><b>Pista:</b> transforma la desigualdad hasta que en el centro aparezca \(Z\).</p>
+        </div>
+        <div class="face back" id="c-221a-back">
+          <div class="face-top"><span class="tag">2.2.1 · a) Resolución</span><button type="button" class="btn-back" id="c-221a-b1">Volver al planteamiento</button></div>
+          <ol class="steps">
+            <li><div><p><b>Plantear.</b> \(\gamma\) es la probabilidad de que \(\mu\) quede entre los dos límites.</p>
+              <div class="eq">\[\gamma = P\left[\bar X - 1.4\frac{\sigma}{\sqrt n} \le \mu \le \bar X + 1.4\frac{\sigma}{\sqrt n}\right]\]</div></div></li>
+            <li><div><p><b>Restar \(\bar X\)</b> a las tres partes.</p>
+              <div class="eq">\[\gamma = P\left[-1.4\frac{\sigma}{\sqrt n} \le \mu - \bar X \le 1.4\frac{\sigma}{\sqrt n}\right]\]</div></div></li>
+            <li><div><p><b>Dividir entre \(\sigma/\sqrt n\).</b> Es positivo, así que los signos no cambian.</p>
+              <div class="eq">\[\gamma = P\left[-1.4 \le \frac{\mu - \bar X}{\sigma/\sqrt n} \le 1.4\right]\]</div></div></li>
+            <li><div><p><b>Multiplicar por \(-1\).</b> Los signos se voltean y el centro queda como el pivote.</p>
+              <div class="eq">\[\gamma = P\left[\,1.4 \ge \frac{\bar X - \mu}{\sigma/\sqrt n} \ge -1.4\right]\]</div></div></li>
+            <li><div><p><b>Reconocer a \(Z\).</b> Como la población es normal, el centro tiene distribución normal estándar.</p>
+              <div class="eq">\[\frac{\bar X - \mu}{\sigma/\sqrt n} \sim N(0,1) \quad\Rightarrow\quad \gamma = P\left[-1.4 \le Z \le 1.4\right]\]</div></div></li>
+            <li><div><p><b>Tabla Z.</b> Área hasta 1.4 menos área hasta −1.4.</p>
+              <div class="eq">\[\gamma = P(Z \le 1.4) - P(Z \le -1.4) = 0.9192 - 0.0808 = 0.8384\]</div>
+              <div class="fig">
+                <svg id="bell" viewBox="0 0 360 140" role="img" aria-label="Campana normal estándar: 0.8385 entre −1.4 y 1.4, y 0.0808 en cada cola">
+                  <path id="bell-mid" class="s-fill" d=""></path>
+                  <path id="bell-l" class="s-off" d=""></path>
+                  <path id="bell-r" class="s-off" d=""></path>
+                  <path id="bell-line" class="s-line" stroke-width="1.5" d=""></path>
+                  <line class="s-line" x1="20" y1="108" x2="340" y2="108"></line>
+                  <text class="s-t" x="180" y="88" text-anchor="middle">0.8385</text>
+                  <text class="s-d" x="70" y="88" text-anchor="middle">0.0808</text>
+                  <text class="s-d" x="290" y="88" text-anchor="middle">0.0808</text>
+                  <text class="s-t" x="116" y="126" text-anchor="middle">−1.4</text>
+                  <text class="s-d" x="180" y="126" text-anchor="middle">0</text>
+                  <text class="s-t" x="244" y="126" text-anchor="middle">1.4</text>
+                </svg>
+              </div>
+              <p class="why">Con más decimales (como en el material) sale 0.83848.</p></div></li>
+          </ol>
+          <div class="result">
+            <p class="label">Resultado</p>
+            <p class="big">\(\gamma \approx 0.8385\)</p>
+            <p>Si se repitiera el muestreo muchas veces, cerca del 83.85 % de los intervalos construidos así contendrían a \(\mu\).</p>
+          </div>
+          <div class="note">
+            <p class="label">Cuidado</p>
+            <p>Es <b>1.4</b> (uno coma cuatro), no \(\tfrac14\). Y como 1.4 es menor que 1.96, tiene sentido que la confianza salga menor que 95 %.</p>
+          </div>
+          <button type="button" class="btn-back btn-bottom" id="c-221a-b2">Cerrar resolución</button>
+        </div>
+      </article>
+
+      <article class="card" id="c-221b">
+        <div class="face front" role="button" tabindex="0" aria-expanded="false" aria-controls="c-221b-back">
+          <div class="face-top"><span class="tag">2.2.1 · b)</span><span class="cta" aria-hidden="true">Ver resolución</span></div>
+          <h3>Determine la longitud del intervalo y su longitud esperada</h3>
+          <p class="ask">Calcula \(L\) y luego \(E(L)\).</p>
+          <p class="hint"><b>Pista:</b> después de restar, mira si queda algo que cambie de una muestra a otra.</p>
+        </div>
+        <div class="face back" id="c-221b-back">
+          <div class="face-top"><span class="tag">2.2.1 · b) Resolución</span><button type="button" class="btn-back" id="c-221b-b1">Volver al planteamiento</button></div>
+          <ol class="steps">
+            <li><div><p><b>Restar los límites.</b> Superior menos inferior.</p>
+              <div class="eq">\[L = \left(\bar X + 1.4\frac{\sigma}{\sqrt n}\right) - \left(\bar X - 1.4\frac{\sigma}{\sqrt n}\right)\]</div></div></li>
+            <li><div><p><b>Quitar paréntesis.</b> El menos de afuera cambia el signo de todo el segundo paréntesis.</p>
+              <div class="eq">\[L = \bar X - \bar X + 1.4\frac{\sigma}{\sqrt n} + 1.4\frac{\sigma}{\sqrt n} = 2.8\,\frac{\sigma}{\sqrt n}\]</div></div></li>
+            <li><div><p><b>¿Quedó algo aleatorio?</b> No. \(\bar X\) se canceló, \(\sigma\) es conocida y \(n\) es fijo. \(L\) es una constante.</p></div></li>
+            <li><div><p><b>Esperanza de una constante</b> es la misma constante.</p>
+              <div class="eq">\[E(L) = E\left(2.8\,\frac{\sigma}{\sqrt n}\right) = 2.8\,\frac{\sigma}{\sqrt n}\]</div></div></li>
+          </ol>
+          <div class="result">
+            <p class="label">Resultado</p>
+            <p class="big">\(L = E(L) = 2.8\,\dfrac{\sigma}{\sqrt n}\)</p>
+            <p>El intervalo cambia de posición en cada muestra, pero siempre mide lo mismo.</p>
+          </div>
+          <div class="note">
+            <p class="label">Cuidado</p>
+            <p>El límite superior es el que <b>suma</b>. Si los intercambias, la longitud sale negativa.</p>
+          </div>
+          <button type="button" class="btn-back btn-bottom" id="c-221b-b2">Cerrar resolución</button>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ================= 2.2.2 ================= -->
+  <section class="frame" id="ej-222" data-tone="yellow">
+    <div class="frame-head">
+      <span class="tag">Ejemplo 2.2.2</span>
+      <h2>Población uniforme, con mínimo y máximo</h2>
+    </div>
+
+    <div class="given">
+      <p class="label">Enunciado</p>
+      <p>Sea \(X_1, X_2\) una muestra aleatoria de tamaño 2 de una población uniforme:</p>
+      <div class="eq">\[X_i \sim U\left(4\theta - \tfrac12,\ 4\theta + \tfrac12\right),\quad i = 1, 2,\quad \theta \in \mathbb R\]</div>
+      <p>Con \(Y_1 = \min\{X_1, X_2\}\) y \(Y_2 = \max\{X_1, X_2\}\), considere el intervalo aleatorio para \(\theta\):</p>
+      <div class="eq">\[I(\mathbf X) = \left[\ \frac{Y_1}{4} - \frac{1}{32}\ ,\ \ \frac{Y_2}{4} + \frac{1}{32}\ \right]\]</div>
+      <p class="hint"><b>Dato de partida:</b> el rectángulo mide 1 de ancho, así que su altura es \(f(x) = 1\).</p>
+    </div>
+
+    <div class="cards">
+
+      <article class="card" id="c-222a">
+        <div class="face front" role="button" tabindex="0" aria-expanded="false" aria-controls="c-222a-back">
+          <div class="face-top"><span class="tag">2.2.2 · a)</span><span class="cta" aria-hidden="true">Ver resolución</span></div>
+          <h3>Halle el coeficiente de confianza \(\gamma\)</h3>
+          <div class="eq">\[\gamma = P_\theta\left(\frac{Y_1}{4} - \frac{1}{32} \le \theta \le \frac{Y_2}{4} + \frac{1}{32}\right)\]</div>
+          <p class="hint"><b>Pista:</b> despeja \(Y_1\) y \(Y_2\). Como no sabes cuál dato es el menor, separa en dos casos.</p>
+        </div>
+        <div class="face back" id="c-222a-back">
+          <div class="face-top"><span class="tag">2.2.2 · a) Resolución</span><button type="button" class="btn-back" id="c-222a-b1">Volver al planteamiento</button></div>
+          <ol class="steps">
+            <li><div><p><b>Despejar las Y.</b> En cada lado: pasar \(\tfrac{1}{32}\) y multiplicar por 4. Recuerda que \(\tfrac{4}{32} = \tfrac18\).</p>
+              <div class="eq">\[\frac{Y_1}{4} - \frac{1}{32} \le \theta \ \Rightarrow\ Y_1 \le 4\theta + \tfrac18\]</div>
+              <div class="eq">\[\theta \le \frac{Y_2}{4} + \frac{1}{32} \ \Rightarrow\ Y_2 \ge 4\theta - \tfrac18\]</div>
+              <div class="eq">\[\gamma = P\left[\,Y_1 \le 4\theta + \tfrac18\ ;\ Y_2 \ge 4\theta - \tfrac18\,\right]\]</div></div></li>
+            <li><div><p><b>Separar en casos.</b> En A el menor es \(X_1\); en B el menor es \(X_2\).</p>
+              <div class="eq">\[A = \left\{X_1 \le 4\theta + \tfrac18\ ;\ X_2 \ge 4\theta - \tfrac18\right\}\]</div>
+              <div class="eq">\[B = \left\{X_2 \le 4\theta + \tfrac18\ ;\ X_1 \ge 4\theta - \tfrac18\right\}\]</div>
+              <div class="eq">\[\gamma = P(A \cup B) = P(A) + P(B) - P(A \cap B)\]</div></div></li>
+            <li><div><p><b>Calcular \(P(A)\).</b> \(X_1\) y \(X_2\) son independientes, así que se multiplica. Cada probabilidad es un ancho: final menos inicio.</p>
+              <div class="fig">
+                <svg viewBox="0 0 360 180" role="img" aria-label="El mismo rectángulo dos veces: arriba sombreado desde 4θ−½ hasta 4θ+⅛, ancho 5/8; abajo sombreado desde 4θ−⅛ hasta 4θ+½, ancho 5/8">
+                  <rect class="s-fill" x="40" y="14" width="175" height="40"></rect>
+                  <rect class="s-line" x="40" y="14" width="280" height="40" stroke-width="1.5"></rect>
+                  <line class="s-line" x1="215" y1="8" x2="215" y2="60" stroke-dasharray="4 3"></line>
+                  <text class="s-t" x="127" y="38" text-anchor="middle">X₁: ancho 5/8</text>
+                  <text class="s-d" x="40" y="76" text-anchor="middle">4θ−½</text>
+                  <text class="s-t" x="215" y="76" text-anchor="middle">4θ+⅛</text>
+                  <text class="s-d" x="320" y="76" text-anchor="middle">4θ+½</text>
+                  <rect class="s-fill" x="145" y="104" width="175" height="40"></rect>
+                  <rect class="s-line" x="40" y="104" width="280" height="40" stroke-width="1.5"></rect>
+                  <line class="s-line" x1="145" y1="98" x2="145" y2="150" stroke-dasharray="4 3"></line>
+                  <text class="s-t" x="232" y="128" text-anchor="middle">X₂: ancho 5/8</text>
+                  <text class="s-d" x="40" y="166" text-anchor="middle">4θ−½</text>
+                  <text class="s-t" x="145" y="166" text-anchor="middle">4θ−⅛</text>
+                  <text class="s-d" x="320" y="166" text-anchor="middle">4θ+½</text>
+                </svg>
+              </div>
+              <div class="eq">\[P\left(X_1 \le 4\theta + \tfrac18\right) = \left(4\theta + \tfrac18\right) - \left(4\theta - \tfrac12\right) = \tfrac18 + \tfrac48 = \tfrac58\]</div>
+              <div class="eq">\[P\left(X_2 \ge 4\theta - \tfrac18\right) = \left(4\theta + \tfrac12\right) - \left(4\theta - \tfrac18\right) = \tfrac48 + \tfrac18 = \tfrac58\]</div>
+              <div class="eq">\[P(A) = \tfrac58 \cdot \tfrac58 = \tfrac{25}{64}\]</div>
+              <p class="why">En la pizarra cada ancho se escribió como una integral de 1; da exactamente lo mismo.</p></div></li>
+            <li><div><p><b>Calcular \(P(B)\).</b> Son las mismas condiciones con \(X_1\) y \(X_2\) intercambiados, y ambos tienen la misma distribución.</p>
+              <div class="eq">\[P(B) = \tfrac{25}{64}\]</div></div></li>
+            <li><div><p><b>Calcular \(P(A \cap B)\).</b> Si se cumplen A y B a la vez, cada dato queda atrapado en la franja del centro, de ancho \(\tfrac14\).</p>
+              <div class="eq">\[P\left(4\theta - \tfrac18 \le X_i \le 4\theta + \tfrac18\right) = \tfrac18 + \tfrac18 = \tfrac14\]</div>
+              <div class="eq">\[P(A \cap B) = \tfrac14 \cdot \tfrac14 = \tfrac{1}{16}\]</div></div></li>
+            <li><div><p><b>Juntar.</b> Para restar, pasa \(\tfrac{1}{16}\) a sesentaicuatroavos.</p>
+              <div class="eq">\[\gamma = \tfrac{25}{64} + \tfrac{25}{64} - \tfrac{4}{64} = \tfrac{46}{64} = \tfrac{23}{32}\]</div></div></li>
+          </ol>
+          <div class="result">
+            <p class="label">Resultado</p>
+            <p class="big">\(\gamma = \dfrac{23}{32} \approx 0.719\)</p>
+            <p>Cerca del 71.9 % de los intervalos construidos así contendrían a \(\theta\).</p>
+          </div>
+          <div class="note">
+            <p class="label">Comprobación rápida</p>
+            <p>El intervalo falla solo si los dos datos caen a la derecha de \(4\theta + \tfrac18\) o los dos a la izquierda de \(4\theta - \tfrac18\). Cada cosa tiene probabilidad \(\left(\tfrac38\right)^2\), así que \(\gamma = 1 - \tfrac{9}{64} - \tfrac{9}{64} = \tfrac{46}{64}\).</p>
+          </div>
+          <div class="note">
+            <p class="label">Cuidado</p>
+            <p>El punto es \(4\theta + \tfrac18\), con más. Y la segunda condición es \(X_2 \ge\), no \(\le\). Mira el dibujo: si la zona sombreada pasa de la mitad, el resultado debe ser mayor que \(\tfrac12\).</p>
+          </div>
+          <button type="button" class="btn-back btn-bottom" id="c-222a-b2">Cerrar resolución</button>
+        </div>
+      </article>
+
+      <article class="card" id="c-222b1">
+        <div class="face front" role="button" tabindex="0" aria-expanded="false" aria-controls="c-222b1-back">
+          <div class="face-top"><span class="tag">2.2.2 · b) Longitud</span><span class="cta" aria-hidden="true">Ver resolución</span></div>
+          <h3>Obtenga la longitud \(L\) del intervalo</h3>
+          <p class="ask">¿Sale constante, como en el 2.2.1?</p>
+          <p class="hint"><b>Pista:</b> aquí no hacen falta casos. \(Y_1\) y \(Y_2\) se quedan como letras.</p>
+        </div>
+        <div class="face back" id="c-222b1-back">
+          <div class="face-top"><span class="tag">2.2.2 · b) Longitud</span><button type="button" class="btn-back" id="c-222b1-b1">Volver al planteamiento</button></div>
+          <ol class="steps">
+            <li><div><p><b>Restar los límites.</b></p>
+              <div class="eq">\[L = \left(\frac{Y_2}{4} + \frac{1}{32}\right) - \left(\frac{Y_1}{4} - \frac{1}{32}\right)\]</div></div></li>
+            <li><div><p><b>Quitar paréntesis y agrupar.</b> \(\tfrac{1}{32} + \tfrac{1}{32} = \tfrac{2}{32} = \tfrac{1}{16}\).</p>
+              <div class="eq">\[L = \frac{Y_2}{4} - \frac{Y_1}{4} + \frac{1}{32} + \frac{1}{32} = \frac14\left(Y_2 - Y_1\right) + \frac{1}{16}\]</div></div></li>
+            <li><div><p><b>Leer el resultado.</b> Las Y no se cancelan: \(L\) depende de qué tan separados salgan los dos datos, así que es aleatoria. Como \(Y_2 \ge Y_1\), nunca baja de \(\tfrac{1}{16}\).</p>
+              <div class="eq">\[L \ge \tfrac{1}{16} > 0\]</div></div></li>
+            <li><div><p><b>Preparar \(E(L)\)</b> con las reglas de la esperanza. Faltan dos promedios.</p>
+              <div class="eq">\[E(L) = \frac14\Big[E(Y_2) - E(Y_1)\Big] + \frac{1}{16}\]</div></div></li>
+          </ol>
+          <div class="result">
+            <p class="label">Resultado</p>
+            <p class="big">\(L = \dfrac14\left(Y_2 - Y_1\right) + \dfrac{1}{16}\)</p>
+            <p>Datos muy juntos dan un intervalo corto; datos muy separados, uno largo.</p>
+          </div>
+          <button type="button" class="btn-back btn-bottom" id="c-222b1-b2">Cerrar resolución</button>
+        </div>
+      </article>
+
+      <article class="card" id="c-222b2">
+        <div class="face front" role="button" tabindex="0" aria-expanded="false" aria-controls="c-222b2-back">
+          <div class="face-top"><span class="tag">2.2.2 · b) Densidades</span><span class="cta" aria-hidden="true">Ver resolución</span></div>
+          <h3>Halle la densidad del máximo \(Y_2\) y la del mínimo \(Y_1\)</h3>
+          <p class="ask">Se necesitan para calcular \(E(Y_2)\) y \(E(Y_1)\).</p>
+          <p class="hint"><b>Pista:</b> empieza por \(F(y)\) en el rectángulo. Para el máximo pregunta por "los dos a la izquierda"; para el mínimo, por "los dos a la derecha".</p>
+        </div>
+        <div class="face back" id="c-222b2-back">
+          <div class="face-top"><span class="tag">2.2.2 · b) Densidades</span><button type="button" class="btn-back" id="c-222b2-b1">Volver al planteamiento</button></div>
+          <ol class="steps">
+            <li><div><p><b>\(F(y)\) de un dato.</b> Área del rectángulo a la izquierda de \(y\): final menos inicio.</p>
+              <div class="eq">\[F(y) = y - \left(4\theta - \tfrac12\right) = y - 4\theta + \tfrac12, \qquad f(y) = 1\]</div>
+              <p class="why">Vale para \(4\theta - \tfrac12 \le y \le 4\theta + \tfrac12\).</p></div></li>
+            <li><div><p><b>Máximo.</b> El mayor es menor o igual que \(y\) si los dos datos lo son. Independientes: se multiplica.</p>
+              <div class="eq">\[\{Y_2 \le y\} = \{X_1 \le y\ ;\ X_2 \le y\}\]</div>
+              <div class="eq">\[F_{Y_2}(y) = F(y)\cdot F(y) = [F(y)]^2\]</div></div></li>
+            <li><div><p><b>Derivar</b> con la regla de la cadena y reemplazar.</p>
+              <div class="eq">\[g_2(y) = 2\,F(y)\,f(y) = 2\left(y - 4\theta + \tfrac12\right)(1) = 1 + 2y - 8\theta\]</div></div></li>
+            <li><div><p><b>Mínimo.</b> El menor supera a \(y\) si los dos datos lo superan. Luego se pasa a "menor o igual" con el complemento.</p>
+              <div class="eq">\[\{Y_1 > y\} = \{X_1 > y\ ;\ X_2 > y\}\]</div>
+              <div class="eq">\[P(Y_1 > y) = [1 - F(y)]^2\]</div>
+              <div class="eq">\[F_{Y_1}(y) = 1 - [1 - F(y)]^2\]</div></div></li>
+            <li><div><p><b>Derivar.</b> La derivada de 1 es 0, y los dos signos menos se cancelan.</p>
+              <div class="eq">\[g_1(y) = -2\,[1 - F(y)]\,(-f(y)) = 2\,[1 - F(y)]\,f(y)\]</div>
+              <div class="eq">\[g_1(y) = 2\left(1 - y + 4\theta - \tfrac12\right)(1) = 1 - 2y + 8\theta\]</div></div></li>
+            <li><div><p><b>Verificar en los bordes.</b> \(g_2\) debe ir de 0 a 2 y \(g_1\) de 2 a 0.</p>
+              <div class="eq">\[g_2\left(4\theta - \tfrac12\right) = 0,\quad g_2\left(4\theta + \tfrac12\right) = 2\]</div>
+              <div class="eq">\[g_1\left(4\theta - \tfrac12\right) = 2,\quad g_1\left(4\theta + \tfrac12\right) = 0\]</div></div></li>
+          </ol>
+          <div class="result">
+            <p class="label">Resultado</p>
+            <p class="big">\(g_2(y) = 1 + 2y - 8\theta\)</p>
+            <p class="big">\(g_1(y) = 1 - 2y + 8\theta\)</p>
+            <p>Ambas para \(4\theta - \tfrac12 \le y \le 4\theta + \tfrac12\).</p>
+          </div>
+          <div class="note">
+            <p class="label">Cuidado</p>
+            <p>El cuadrado afecta a todo el corchete: \([1 - F]^2\) no es \(1 - F^2\). Si dudas, prueba con \(F = 0.5\): da 0.25 contra 0.75.</p>
+          </div>
+          <button type="button" class="btn-back btn-bottom" id="c-222b2-b2">Cerrar resolución</button>
+        </div>
+      </article>
+
+      <article class="card" id="c-222b3">
+        <div class="face front" role="button" tabindex="0" aria-expanded="false" aria-controls="c-222b3-back">
+          <div class="face-top"><span class="tag">2.2.2 · b) Promedios</span><span class="cta" aria-hidden="true">Ver resolución</span></div>
+          <h3>Calcule \(E(Y_2)\) y \(E(Y_1)\)</h3>
+          <div class="eq">\[g_2(y) = 1 + 2y - 8\theta \qquad g_1(y) = 1 - 2y + 8\theta\]</div>
+          <p class="hint"><b>Pista:</b> llama \(a = 4\theta + \tfrac12\) y \(b = 4\theta - \tfrac12\) para no arrastrar fracciones.</p>
+        </div>
+        <div class="face back" id="c-222b3-back">
+          <div class="face-top"><span class="tag">2.2.2 · b) Promedios</span><button type="button" class="btn-back" id="c-222b3-b1">Volver al planteamiento</button></div>
+          <ol class="steps">
+            <li><div><p><b>Plantear la integral</b> entre los bordes del rectángulo y multiplicar la \(y\) por cada término.</p>
+              <div class="eq">\[E(Y_2) = \int_b^a y\,(2y + 1 - 8\theta)\,dy = \int_b^a \left[2y^2 + (1 - 8\theta)\,y\right]dy\]</div></div></li>
+            <li><div><p><b>Antiderivada.</b> Cada potencia sube en 1 y se divide entre el nuevo exponente. \((1 - 8\theta)\) no tiene \(y\): se comporta como un número.</p>
+              <div class="eq">\[\frac23\,y^3 + \frac{1 - 8\theta}{2}\,y^2\]</div></div></li>
+            <li><div><p><b>Evaluar en \(a\), evaluar en \(b\) y restar.</b></p>
+              <div class="eq">\[E(Y_2) = \frac23\left(a^3 - b^3\right) + \frac{1 - 8\theta}{2}\left(a^2 - b^2\right)\]</div></div></li>
+            <li><div><p><b>Las piezas.</b></p>
+              <div class="eq">\[a - b = 1 \qquad a + b = 8\theta \qquad ab = 16\theta^2 - \tfrac14\]</div>
+              <div class="eq">\[a^2 = 16\theta^2 + 4\theta + \tfrac14 \qquad b^2 = 16\theta^2 - 4\theta + \tfrac14\]</div>
+              <div class="eq">\[a^2 - b^2 = (a - b)(a + b) = 8\theta\]</div>
+              <div class="eq">\[a^3 - b^3 = (a - b)\left(a^2 + ab + b^2\right) = 48\theta^2 + \tfrac14\]</div></div></li>
+            <li><div><p><b>Reemplazar y simplificar.</b> Los \(32\theta^2\) se cancelan.</p>
+              <div class="eq">\[E(Y_2) = \frac23\left(48\theta^2 + \tfrac14\right) + \frac{1 - 8\theta}{2}\,(8\theta)\]</div>
+              <div class="eq">\[E(Y_2) = 32\theta^2 + \tfrac16 + 4\theta - 32\theta^2 = 4\theta + \tfrac16\]</div></div></li>
+            <li><div><p><b>De manera similar para el mínimo</b>, con \(g_1\).</p>
+              <div class="eq">\[E(Y_1) = \int_b^a y\,(1 + 8\theta - 2y)\,dy = \frac{1 + 8\theta}{2}\,(8\theta) - \frac23\left(48\theta^2 + \tfrac14\right)\]</div>
+              <div class="eq">\[E(Y_1) = 4\theta + 32\theta^2 - 32\theta^2 - \tfrac16 = 4\theta - \tfrac16\]</div></div></li>
+          </ol>
+          <div class="result">
+            <p class="label">Resultado</p>
+            <p class="big">\(E(Y_2) = 4\theta + \dfrac16 \qquad E(Y_1) = 4\theta - \dfrac16\)</p>
+            <p>Atajo para verificar: en una uniforme con dos datos, el máximo promedia a \(\tfrac23\) del camino desde el borde izquierdo y el mínimo a \(\tfrac13\).</p>
+          </div>
+          <div class="note">
+            <p class="label">Ojo con la pizarra</p>
+            <p>En la pizarra quedó \(E(Y_2) = 4\theta + \tfrac12\) y \(E(Y_1) = 4\theta - \tfrac12\). La diferencia está en una multiplicación: \(\tfrac23 \cdot \tfrac14 = \tfrac16\), no \(\tfrac12\). Además \(4\theta + \tfrac12\) es el borde del rectángulo, y el máximo no puede promediar justo el borde. Conviene consultarlo con el profesor antes del examen.</p>
+          </div>
+          <div class="note">
+            <p class="label">Cuidado</p>
+            <p>Al evaluar sale \(a^3 - b^3\), no \((a - b)^3\). Con \(a = 2\), \(b = 1\): 7 contra 1.</p>
+          </div>
+          <button type="button" class="btn-back btn-bottom" id="c-222b3-b2">Cerrar resolución</button>
+        </div>
+      </article>
+
+      <article class="card" id="c-222b4">
+        <div class="face front" role="button" tabindex="0" aria-expanded="false" aria-controls="c-222b4-back">
+          <div class="face-top"><span class="tag">2.2.2 · b) Longitud esperada</span><span class="cta" aria-hidden="true">Ver resolución</span></div>
+          <h3>Obtenga la longitud esperada \(E(L)\)</h3>
+          <div class="eq">\[L = \frac14\left(Y_2 - Y_1\right) + \frac{1}{16} \qquad E(Y_2) = 4\theta + \tfrac16 \qquad E(Y_1) = 4\theta - \tfrac16\]</div>
+          <p class="hint"><b>Pista:</b> el \(\tfrac14\) sale de la esperanza y el \(\tfrac{1}{16}\) se queda igual.</p>
+        </div>
+        <div class="face back" id="c-222b4-back">
+          <div class="face-top"><span class="tag">2.2.2 · b) Longitud esperada</span><button type="button" class="btn-back" id="c-222b4-b1">Volver al planteamiento</button></div>
+          <ol class="steps">
+            <li><div><p><b>Aplicar las reglas de la esperanza.</b></p>
+              <div class="eq">\[E(L) = \frac14\Big[E(Y_2) - E(Y_1)\Big] + \frac{1}{16}\]</div></div></li>
+            <li><div><p><b>Restar los promedios.</b> Los \(4\theta\) se cancelan.</p>
+              <div class="eq">\[E(Y_2) - E(Y_1) = \left(4\theta + \tfrac16\right) - \left(4\theta - \tfrac16\right) = \tfrac26 = \tfrac13\]</div></div></li>
+            <li><div><p><b>Multiplicar por \(\tfrac14\).</b></p>
+              <div class="eq">\[\tfrac14 \cdot \tfrac13 = \tfrac{1}{12}\]</div></div></li>
+            <li><div><p><b>Sumar \(\tfrac{1}{16}\)</b> con denominador común 48.</p>
+              <div class="eq">\[E(L) = \tfrac{1}{12} + \tfrac{1}{16} = \tfrac{4}{48} + \tfrac{3}{48} = \tfrac{7}{48}\]</div></div></li>
+          </ol>
+          <div class="result">
+            <p class="label">Resultado</p>
+            <p class="big">\(E(L) = \dfrac{7}{48} \approx 0.146\)</p>
+            <p>Tiene sentido: \(L\) nunca baja de \(\tfrac{1}{16} \approx 0.0625\) y en promedio es algo mayor.</p>
+          </div>
+          <div class="note">
+            <p class="label">Ojo con la pizarra</p>
+            <p>En la pizarra salió \(\tfrac{5}{16}\), porque arrastra \(E(Y_2) - E(Y_1) = 1\) del paso anterior. Con los promedios corregidos el resultado es \(\tfrac{7}{48}\).</p>
+          </div>
+          <div class="note">
+            <p class="label">Cuidado</p>
+            <p>Antes de sumar fracciones, iguala los denominadores: \(\tfrac{1}{12} + \tfrac{1}{16}\) no es \(\tfrac{7}{12}\).</p>
+          </div>
+          <button type="button" class="btn-back btn-bottom" id="c-222b4-b2">Cerrar resolución</button>
+        </div>
+      </article>
+
+    </div>
+
+    <p class="foot">Los incisos c) y d) del material, con el intervalo \([Y_1, Y_2]\), no se resolvieron en esa clase.</p>
+  </section>
+
+</div>
+
+<script>
+(function () {
+  var cards = Array.prototype.slice.call(document.querySelectorAll('.card'));
+
+  function setOpen(card, open) {
+    card.classList.toggle('open', open);
+    var front = card.querySelector('.front');
+    front.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+
+  cards.forEach(function (card) {
+    var front = card.querySelector('.front');
+    front.addEventListener('click', function () {
+      setOpen(card, true);
+      var b = card.querySelector('.btn-back');
+      if (b) { try { b.focus({ preventScroll: true }); } catch (e) {} }
+    });
+    front.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); front.click(); }
+    });
+    Array.prototype.forEach.call(card.querySelectorAll('.btn-back'), function (btn) {
+      btn.addEventListener('click', function () {
+        setOpen(card, false);
+        if (card.getBoundingClientRect().top < 0) { card.scrollIntoView({ block: 'start' }); }
+        try { front.focus({ preventScroll: true }); } catch (e) {}
+      });
+    });
+  });
+
+  document.getElementById('open-all').addEventListener('click', function () {
+    cards.forEach(function (c) { setOpen(c, true); });
+  });
+  document.getElementById('close-all').addEventListener('click', function () {
+    cards.forEach(function (c) { setOpen(c, false); });
+  });
+
+  /* Campana N(0,1) a escala: z de -3.5 a 3.5, línea base en y = 108, altura máxima 84 */
+  function X(z) { return 20 + (z + 3.5) / 7 * 320; }
+  function Y(z) { return 108 - 84 * Math.exp(-z * z / 2); }
+  function curve(z0, z1) {
+    var pts = [], n = 60, i, z;
+    for (i = 0; i <= n; i++) { z = z0 + (z1 - z0) * i / n; pts.push(X(z).toFixed(1) + ' ' + Y(z).toFixed(1)); }
+    return pts;
+  }
+  function area(z0, z1) {
+    return 'M' + X(z0).toFixed(1) + ' 108 L' + curve(z0, z1).join(' L') + ' L' + X(z1).toFixed(1) + ' 108 Z';
+  }
+  var line = document.getElementById('bell-line');
+  if (line) {
+    line.setAttribute('d', 'M' + curve(-3.5, 3.5).join(' L'));
+    document.getElementById('bell-mid').setAttribute('d', area(-1.4, 1.4));
+    document.getElementById('bell-l').setAttribute('d', area(-3.5, -1.4));
+    document.getElementById('bell-r').setAttribute('d', area(1.4, 3.5));
+  }
+})();
+</script>
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+  svg: { fontCache: 'local' }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js" defer></script>
+
+</body></html>
