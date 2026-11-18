@@ -1,5 +1,5 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Curso Inferencia Estadística</title>
+<title>Curso de Inferencia Estadística, Huamaní</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@500;600&display=swap">
 <style>
@@ -7,11 +7,11 @@
    Tres marcos grandes (teoría, 2.2.1, 2.2.2); dentro, las tarjetas son las piezas con sombra dura. */
 :root{
   color-scheme: dark;
-  --board:#13231c;      /* fondo: pizarra */
-  --grid:#182b23;       /* cuadrícula del cuaderno */
-  --frame:#1a3027;      /* marco de cada bloque */
-  --slate:#234035;      /* cara de las tarjetas */
-  --well:#0f1c16;       /* cajas de fórmulas */
+  --board:#0c1411;      /* fondo: pizarra verde muy oscura */
+  --grid:#16221d;       /* cuadrícula del cuaderno */
+  --frame:#1d252d;      /* marco de cada bloque: gris azulado */
+  --slate:#2d3a46;      /* cara de las tarjetas: más clara que el marco */
+  --well:#0e1318;       /* cajas de fórmulas: casi negro */
   --ink:#060c09;        /* bordes y sombras */
   --chalk:#ece9dc;      /* texto: tiza blanca */
   --chalk-dim:#a9b6a8;  /* texto secundario */
@@ -65,6 +65,10 @@ a{color:var(--blue)}
   transition:transform .12s,box-shadow .12s;
 }
 .jump{background:var(--frame);color:var(--chalk)}
+.jump[data-tone]{background:var(--tone);color:var(--ink)}
+.jump[data-tone="blue"]{--tone:var(--blue)}
+.jump[data-tone="orange"]{--tone:var(--orange)}
+.jump[data-tone="yellow"]{--tone:var(--yellow)}
 .tool{background:var(--red);color:var(--ink)}
 .jump:hover,.tool:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
 .jump:active,.tool:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
@@ -75,6 +79,9 @@ a{color:var(--blue)}
   background:var(--frame);border:2.5px solid var(--ink);border-radius:20px;
   box-shadow:8px 8px 0 var(--ink);padding:24px;display:grid;gap:22px;
   scroll-margin-top:16px;
+  background:linear-gradient(var(--tone),var(--tone)) top/100% 8px no-repeat,
+             color-mix(in srgb,var(--tone) 5%,var(--frame));
+  padding-top:32px;
 }
 .frame[data-tone="orange"]{--tone:var(--orange)}
 .frame[data-tone="yellow"]{--tone:var(--yellow)}
@@ -107,7 +114,7 @@ a{color:var(--blue)}
 .t-body .eq{margin-top:0}
 
 /* ---------- enunciado ---------- */
-.given{border:2.5px dashed var(--tone);border-radius:14px;padding:16px 18px;display:grid;gap:8px;min-width:0}
+.given{border:2.5px dashed var(--tone);border-radius:14px;padding:16px 18px;display:grid;gap:8px;min-width:0;background:color-mix(in srgb,var(--tone) 9%,var(--well))}
 .label{font-family:var(--font-mono);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--tone)}
 
 /* ---------- tarjetas ---------- */
@@ -115,11 +122,52 @@ a{color:var(--blue)}
 .card{
   position:relative;background:var(--slate);border:2.5px solid var(--ink);border-radius:16px;
   box-shadow:6px 6px 0 var(--ink);transition:transform .12s,box-shadow .12s;min-width:0;
-  scroll-margin-top:16px;
+  scroll-margin-top:16px;border-left:8px solid var(--tone);
 }
 .card:not(.open):hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 var(--ink)}
 .card:not(.open):active{transform:translate(3px,3px);box-shadow:3px 3px 0 var(--ink)}
-.card.open{background:var(--frame);box-shadow:6px 6px 0 var(--tone)}
+.card.open{background:#252f39;box-shadow:6px 6px 0 var(--tone)}
+.t-row{scroll-margin-top:16px}
+
+/* ---------- índice lateral ---------- */
+.layout{display:block}
+.toc{display:none}
+.toc-head{font-family:var(--font-mono);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--chalk-dim);margin:0 0 10px}
+.toc ol{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.toc ol ol{margin:2px 0 8px 14px;padding-left:10px;border-left:2px solid color-mix(in srgb,var(--tone) 45%,transparent)}
+.toc li{--tone:var(--blue)}
+.toc li[data-tone="orange"]{--tone:var(--orange)}
+.toc li[data-tone="yellow"]{--tone:var(--yellow)}
+.toc a{display:block;padding:5px 9px;border-radius:8px;color:var(--chalk-dim);text-decoration:none;font-size:14px;line-height:1.3}
+.toc a:hover{background:var(--slate);color:var(--chalk)}
+.toc .sec{font-family:var(--font-display);font-weight:800;font-size:15.5px;color:var(--chalk);display:flex;gap:8px;align-items:center}
+.toc .sec::before{content:"";width:10px;height:10px;border-radius:3px;background:var(--tone);border:1.5px solid var(--ink);flex:none}
+.toc a.active{background:color-mix(in srgb,var(--tone) 22%,var(--slate));color:var(--chalk);box-shadow:inset 3px 0 0 var(--tone)}
+.toc a.sec.active{background:transparent;box-shadow:none;color:var(--tone)}
+.toc .mjx{white-space:nowrap}
+.toc-toggle,.toc-backdrop{display:none}
+
+@media (min-width:1100px){
+  .layout{display:grid;grid-template-columns:250px minmax(0,800px);gap:28px;justify-content:center;padding-inline:16px}
+  .layout .page{margin:0;padding-left:0;padding-right:0}
+  .toc{
+    display:block;position:sticky;top:20px;align-self:start;margin-top:36px;
+    max-height:calc(100vh - 40px);overflow-y:auto;
+    background:var(--frame);border:2.5px solid var(--ink);border-radius:16px;box-shadow:5px 5px 0 var(--ink);padding:16px 12px;
+  }
+}
+@media (max-width:1099.98px){
+  .toc-toggle{
+    display:block;position:fixed;left:max(14px,env(safe-area-inset-left,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));z-index:30;
+    font-family:var(--font-mono);font-size:13px;font-weight:600;background:var(--blue);color:var(--ink);
+    border:2.5px solid var(--ink);border-radius:10px;padding:8px 14px;box-shadow:3px 3px 0 var(--ink);cursor:pointer;
+  }
+  body.toc-open .toc{
+    display:block;position:fixed;top:0;bottom:0;left:0;z-index:40;width:min(300px,85vw);overflow-y:auto;
+    background:var(--frame);border-right:2.5px solid var(--ink);padding:20px 14px;
+  }
+  body.toc-open .toc-backdrop{display:block;position:fixed;inset:0;z-index:35;background:rgba(0,0,0,.55)}
+}
 .face{padding:20px 22px;display:grid;gap:14px;min-width:0}
 .front{cursor:pointer;border-radius:14px}
 .card:not(.open) .back,
@@ -186,16 +234,53 @@ a{color:var(--blue)}
 }
 </style>
 
+<button type="button" class="toc-toggle" id="toc-toggle" aria-controls="toc" aria-expanded="false">☰ Índice</button>
+<div class="toc-backdrop" id="toc-backdrop"></div>
+
+<div class="layout">
+
+<aside class="toc" id="toc" aria-label="Índice">
+  <p class="toc-head">Índice</p>
+  <ol>
+    <li data-tone="blue"><a class="sec" href="#teoria">Teoría</a>
+      <ol>
+        <li><a href="#t-1">1 · Las dos medidas</a></li>
+        <li><a href="#t-2">2 · Normal, pivote y tabla Z</a></li>
+        <li><a href="#t-3">3 · Reglas de la esperanza</a></li>
+        <li><a href="#t-4">4 · Uniforme: área = probabilidad</a></li>
+        <li><a href="#t-5">5 · Reglas de probabilidad</a></li>
+        <li><a href="#t-6">6 · Máximo y mínimo</a></li>
+        <li><a href="#t-7">7 · Derivar e integrar</a></li>
+      </ol>
+    </li>
+    <li data-tone="orange"><a class="sec" href="#ej-221">Ejemplo 2.2.1</a>
+      <ol>
+        <li><a href="#c-221a">a) Coeficiente de confianza</a></li>
+        <li><a href="#c-221b">b) Longitud y longitud esperada</a></li>
+      </ol>
+    </li>
+    <li data-tone="yellow"><a class="sec" href="#ej-222">Ejemplo 2.2.2</a>
+      <ol>
+        <li><a href="#c-222a">a) Coeficiente de confianza</a></li>
+        <li><a href="#c-222b1">b) Longitud</a></li>
+        <li><a href="#c-222b2">b) Densidades de Y₁ y Y₂</a></li>
+        <li><a href="#c-222b3">b) E(Y₂) y E(Y₁)</a></li>
+        <li><a href="#c-222b4">b) Longitud esperada</a></li>
+      </ol>
+    </li>
+  </ol>
+</aside>
+
 <div class="page">
 
   <header class="top">
-    <p class="eyebrow">Inferencia Estadística · UNALM · Cap. 2, intervalos de confianza</p>
-    <h1>Evaluar un intervalo <mark>ya dado</mark></h1>
-    <p class="lead">Ejemplos <b>2.2.1</b> y <b>2.2.2</b>, con los pasos de la pizarra del viernes 6 de noviembre. Lee el planteamiento, inténtalo en tu cuaderno y toca la tarjeta para comparar con la resolución.</p>
+    <p class="eyebrow">UNALM · Teoría, ejemplos y ejercicios resueltos</p>
+    <h1>Curso de Inferencia Estadística, <mark>Huamaní</mark></h1>
+    <p class="lead">Ejemplos y ejercicios del curso resueltos paso a paso, siguiendo lo visto en clase, con la <b>teoría justa</b> para cada uno. Lee el planteamiento, inténtalo en tu cuaderno y toca la tarjeta para comparar con la resolución.</p>
     <nav class="bar" aria-label="Secciones">
-      <a class="jump" href="#teoria">Teoría</a>
-      <a class="jump" href="#ej-221">Ejemplo 2.2.1</a>
-      <a class="jump" href="#ej-222">Ejemplo 2.2.2</a>
+      <a class="jump" data-tone="blue" href="#teoria">Teoría</a>
+      <a class="jump" data-tone="orange" href="#ej-221">Ejemplo 2.2.1</a>
+      <a class="jump" data-tone="yellow" href="#ej-222">Ejemplo 2.2.2</a>
       <span class="sep"></span>
       <button type="button" class="tool" id="open-all">Abrir todas</button>
       <button type="button" class="tool" id="close-all">Cerrar todas</button>
@@ -212,7 +297,7 @@ a{color:var(--blue)}
 
     <div class="rows">
 
-      <div class="t-row">
+      <div class="t-row" id="t-1">
         <div class="t-key"><span class="t-num">1</span><h3>Las dos medidas</h3><span class="used">todo</span></div>
         <div class="t-body">
           <ul>
@@ -224,7 +309,7 @@ a{color:var(--blue)}
         </div>
       </div>
 
-      <div class="t-row">
+      <div class="t-row" id="t-2">
         <div class="t-key"><span class="t-num">2</span><h3>Normal, pivote y tabla Z</h3><span class="used">2.2.1 a)</span></div>
         <div class="t-body">
           <ul>
@@ -240,7 +325,7 @@ a{color:var(--blue)}
         </div>
       </div>
 
-      <div class="t-row">
+      <div class="t-row" id="t-3">
         <div class="t-key"><span class="t-num">3</span><h3>Reglas de la esperanza</h3><span class="used">2.2.1 b) · 2.2.2 b)</span></div>
         <div class="t-body">
           <p>Esperanza = promedio si repitieras el muestreo muchas veces.</p>
@@ -250,7 +335,7 @@ a{color:var(--blue)}
         </div>
       </div>
 
-      <div class="t-row">
+      <div class="t-row" id="t-4">
         <div class="t-key"><span class="t-num">4</span><h3>Uniforme: área = probabilidad</h3><span class="used">2.2.2 a)</span></div>
         <div class="t-body">
           <ul>
@@ -274,7 +359,7 @@ a{color:var(--blue)}
         </div>
       </div>
 
-      <div class="t-row">
+      <div class="t-row" id="t-5">
         <div class="t-key"><span class="t-num">5</span><h3>Reglas de probabilidad</h3><span class="used">2.2.2 a)</span></div>
         <div class="t-body">
           <ul>
@@ -286,7 +371,7 @@ a{color:var(--blue)}
         </div>
       </div>
 
-      <div class="t-row">
+      <div class="t-row" id="t-6">
         <div class="t-key"><span class="t-num">6</span><h3>Máximo y mínimo de dos datos</h3><span class="used">2.2.2 b)</span></div>
         <div class="t-body">
           <ul>
@@ -312,7 +397,7 @@ a{color:var(--blue)}
         </div>
       </div>
 
-      <div class="t-row">
+      <div class="t-row" id="t-7">
         <div class="t-key"><span class="t-num">7</span><h3>Derivar e integrar, lo mínimo</h3><span class="used">2.2.2 b)</span></div>
         <div class="t-body">
           <ul>
@@ -671,6 +756,55 @@ a{color:var(--blue)}
   </section>
 
 </div>
+</div>
+
+<script>
+/* Índice: resalta la sección visible y abre/cierra el panel en pantallas angostas */
+(function () {
+  var toc = document.getElementById('toc');
+  var toggle = document.getElementById('toc-toggle');
+  var backdrop = document.getElementById('toc-backdrop');
+  var links = Array.prototype.slice.call(toc.querySelectorAll('a[href^="#"]'));
+  var items = links.map(function (a) {
+    return { a: a, el: document.getElementById(a.getAttribute('href').slice(1)) };
+  }).filter(function (x) { return x.el; });
+
+  function setDrawer(open) {
+    document.body.classList.toggle('toc-open', open);
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  toggle.addEventListener('click', function () { setDrawer(!document.body.classList.contains('toc-open')); });
+  backdrop.addEventListener('click', function () { setDrawer(false); });
+  links.forEach(function (a) { a.addEventListener('click', function () { setDrawer(false); }); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') setDrawer(false); });
+
+  var ticking = false;
+  function update() {
+    ticking = false;
+    var line = window.innerHeight * 0.3, current = null, currentSec = null;
+    items.forEach(function (x) {
+      if (x.el.getBoundingClientRect().top <= line) {
+        if (x.a.classList.contains('sec')) { currentSec = x; current = null; }
+        else { current = x; }
+      }
+    });
+    links.forEach(function (a) { a.classList.remove('active'); });
+    if (currentSec) currentSec.a.classList.add('active');
+    if (current) {
+      current.a.classList.add('active');
+      if (window.innerWidth >= 1100) {
+        var r = current.a.getBoundingClientRect(), t = toc.getBoundingClientRect();
+        if (r.top < t.top || r.bottom > t.bottom) current.a.scrollIntoView({ block: 'nearest' });
+      }
+    }
+  }
+  window.addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
 
 <script>
 (function () {
