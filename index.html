@@ -571,8 +571,7 @@ a{color:var(--blue)}
               </div>
               <div class="eq">\[P\left(X_1 \le 4\theta + \tfrac18\right) = \left(4\theta + \tfrac18\right) - \left(4\theta - \tfrac12\right) = \tfrac18 + \tfrac48 = \tfrac58\]</div>
               <div class="eq">\[P\left(X_2 \ge 4\theta - \tfrac18\right) = \left(4\theta + \tfrac12\right) - \left(4\theta - \tfrac18\right) = \tfrac48 + \tfrac18 = \tfrac58\]</div>
-              <div class="eq">\[P(A) = \tfrac58 \cdot \tfrac58 = \tfrac{25}{64}\]</div>
-              <p class="why">En la pizarra cada ancho se escribió como una integral de 1; da exactamente lo mismo.</p></div></li>
+              <div class="eq">\[P(A) = \tfrac58 \cdot \tfrac58 = \tfrac{25}{64}\]</div></div></li>
             <li><div><p><b>Calcular \(P(B)\).</b> Son las mismas condiciones con \(X_1\) y \(X_2\) intercambiados, y ambos tienen la misma distribución.</p>
               <div class="eq">\[P(B) = \tfrac{25}{64}\]</div></div></li>
             <li><div><p><b>Calcular \(P(A \cap B)\).</b> Si se cumplen A y B a la vez, cada dato queda atrapado en la franja del centro, de ancho \(\tfrac14\).</p>
@@ -703,10 +702,6 @@ a{color:var(--blue)}
             <p>Atajo para verificar: en una uniforme con dos datos, el máximo promedia a \(\tfrac23\) del camino desde el borde izquierdo y el mínimo a \(\tfrac13\).</p>
           </div>
           <div class="note">
-            <p class="label">Ojo con la pizarra</p>
-            <p>En la pizarra quedó \(E(Y_2) = 4\theta + \tfrac12\) y \(E(Y_1) = 4\theta - \tfrac12\). La diferencia está en una multiplicación: \(\tfrac23 \cdot \tfrac14 = \tfrac16\), no \(\tfrac12\). Además \(4\theta + \tfrac12\) es el borde del rectángulo, y el máximo no puede promediar justo el borde. Conviene consultarlo con el profesor antes del examen.</p>
-          </div>
-          <div class="note">
             <p class="label">Cuidado</p>
             <p>Al evaluar sale \(a^3 - b^3\), no \((a - b)^3\). Con \(a = 2\), \(b = 1\): 7 contra 1.</p>
           </div>
@@ -724,27 +719,19 @@ a{color:var(--blue)}
         <div class="face back" id="c-222b4-back">
           <div class="face-top"><span class="tag">2.2.2 · b) Longitud esperada</span><button type="button" class="btn-back" id="c-222b4-b1">Volver al planteamiento</button></div>
           <ol class="steps">
-            <li><div><p><b>Aplicar las reglas de la esperanza.</b></p>
+            <li><div><p><b>Aplicar las reglas de la esperanza.</b> La esperanza de una suma o resta se obtiene término a término.</p>
               <div class="eq">\[E(L) = \frac14\Big[E(Y_2) - E(Y_1)\Big] + \frac{1}{16}\]</div></div></li>
-            <li><div><p><b>Restar los promedios.</b> Los \(4\theta\) se cancelan.</p>
+            <li><div><p><b>Restar los promedios.</b> Los términos \(4\theta\) se cancelan.</p>
               <div class="eq">\[E(Y_2) - E(Y_1) = \left(4\theta + \tfrac16\right) - \left(4\theta - \tfrac16\right) = \tfrac26 = \tfrac13\]</div></div></li>
             <li><div><p><b>Multiplicar por \(\tfrac14\).</b></p>
               <div class="eq">\[\tfrac14 \cdot \tfrac13 = \tfrac{1}{12}\]</div></div></li>
-            <li><div><p><b>Sumar \(\tfrac{1}{16}\)</b> con denominador común 48.</p>
+            <li><div><p><b>Sumar \(\tfrac{1}{16}\).</b> Para sumar, se utiliza el denominador común 48.</p>
               <div class="eq">\[E(L) = \tfrac{1}{12} + \tfrac{1}{16} = \tfrac{4}{48} + \tfrac{3}{48} = \tfrac{7}{48}\]</div></div></li>
           </ol>
           <div class="result">
             <p class="label">Resultado</p>
             <p class="big">\(E(L) = \dfrac{7}{48} \approx 0.146\)</p>
-            <p>Tiene sentido: \(L\) nunca baja de \(\tfrac{1}{16} \approx 0.0625\) y en promedio es algo mayor.</p>
-          </div>
-          <div class="note">
-            <p class="label">Ojo con la pizarra</p>
-            <p>En la pizarra salió \(\tfrac{5}{16}\), porque arrastra \(E(Y_2) - E(Y_1) = 1\) del paso anterior. Con los promedios corregidos el resultado es \(\tfrac{7}{48}\).</p>
-          </div>
-          <div class="note">
-            <p class="label">Cuidado</p>
-            <p>Antes de sumar fracciones, iguala los denominadores: \(\tfrac{1}{12} + \tfrac{1}{16}\) no es \(\tfrac{7}{12}\).</p>
+            <p>La longitud promedio es mayor que el término mínimo \(\tfrac{1}{16}\), pues la separación esperada entre el máximo y el mínimo aporta \(\tfrac{1}{12}\).</p>
           </div>
           <button type="button" class="btn-back btn-bottom" id="c-222b4-b2">Cerrar resolución</button>
         </div>

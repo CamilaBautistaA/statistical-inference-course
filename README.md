@@ -24,3 +24,9 @@ Si deseas visualizar el material en tu computadora sin conexión:
    ```bash
    git clone [https://github.com/CamilaBautistaA/statistical-inference-course.git](https://github.com/CamilaBautistaA/statistical-inference-course.git)
    ```
+
+---
+
+## Créditos
+
+* **Autora de la plantilla y del material:** Camila Bautista Aldave.
